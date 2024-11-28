@@ -167,7 +167,7 @@ for idx, image_file in enumerate(input_files):
     input_image = Image.open(image_file)
     if not args.no_rembg:
         input_image = remove_background(input_image, rembg_session)
-        #input_image = resize_foreground(input_image, 0.85)
+        input_image = resize_foreground(input_image, 0.85)
     
     # sampling
     output_image = pipeline(
