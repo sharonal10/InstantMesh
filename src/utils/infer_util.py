@@ -39,6 +39,7 @@ def resize_foreground(
     fg = image[y1:y2, x1:x2]
     # pad to square
     size = max(fg.shape[0], fg.shape[1])
+    
     ph0, pw0 = (size - fg.shape[0]) // 2, (size - fg.shape[1]) // 2
     ph1, pw1 = size - fg.shape[0] - ph0, size - fg.shape[1] - pw0
     new_image = np.pad(
@@ -59,6 +60,7 @@ def resize_foreground(
         mode="constant",
         constant_values=((0, 0), (0, 0), (0, 0)),
     )
+    print('new size', image.shape, new_size, new_size/image.shape[0])
     new_image = PIL.Image.fromarray(new_image)
     return new_image
 

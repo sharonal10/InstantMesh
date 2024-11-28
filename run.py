@@ -22,7 +22,7 @@ from src.utils.mesh_util import save_obj, save_obj_with_mtl
 from src.utils.infer_util import remove_background, resize_foreground, save_video
 
 
-def get_render_cameras(batch_size=1, M=120, radius=4.0, elevation=20.0, is_flexicubes=False):
+def get_render_cameras(batch_size=1, M=120, radius=5.0, elevation=20.0, is_flexicubes=False):
     """
     Get the rendering camera parameters.
     """
@@ -73,7 +73,7 @@ parser.add_argument('--output_path', type=str, default='outputs/', help='Output 
 parser.add_argument('--diffusion_steps', type=int, default=75, help='Denoising Sampling steps.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed for sampling.')
 parser.add_argument('--scale', type=float, default=1.0, help='Scale of generated object.')
-parser.add_argument('--distance', type=float, default=4.5, help='Render distance.')
+parser.add_argument('--distance', type=float, default=5.0, help='Render distance.')
 parser.add_argument('--view', type=int, default=6, choices=[4, 6], help='Number of input views.')
 parser.add_argument('--no_rembg', action='store_true', help='Do not remove input background.')
 parser.add_argument('--export_texmap', action='store_true', help='Export a mesh with texture map.')
@@ -167,7 +167,7 @@ for idx, image_file in enumerate(input_files):
     input_image = Image.open(image_file)
     if not args.no_rembg:
         input_image = remove_background(input_image, rembg_session)
-        input_image = resize_foreground(input_image, 0.85)
+        #input_image = resize_foreground(input_image, 0.85)
     
     # sampling
     output_image = pipeline(
@@ -191,7 +191,7 @@ del pipeline
 # Stage 2: Reconstruction.
 ###############################################################################
 
-input_cameras = get_zero123plus_input_cameras(batch_size=1, radius=4.0*args.scale).to(device)
+input_cameras = get_zero123plus_input_cameras(batch_size=1, radius=5.0*args.scale).to(device)
 chunk_size = 20 if IS_FLEXICUBES else 1
 
 for idx, sample in enumerate(outputs):
@@ -247,7 +247,7 @@ for idx, sample in enumerate(outputs):
             
             frames = render_frames(
                 model, 
-                planes, 
+                planes,
                 render_cameras=render_cameras, 
                 render_size=render_size, 
                 chunk_size=chunk_size, 
